@@ -1,0 +1,75 @@
+name: vapor-dev-stack
+
+networks:
+  devnet:
+    driver: bridge
+
+volumes:
+  pgdata:
+
+services:
+  app:
+    # image: swift:5.10-jammy
+    # [TRQ] Test Vapor App
+    image: vapor-app:latest
+    build:
+        context: ./Vapor_App
+
+    container_name: vapor-app
+    working_dir: /app
+    # [TRQ] These became redundant
+    # command: "sleep infinity"
+    # ports:
+    #   - "8080:8080"
+    environment:
+      # Adaptez ces variables à votre configuration Vapor
+      DATABASE_URL: postgres://app:secret@postgres:5432/appdb
+      DATABASE_HOST: postgres
+      DATABASE_NAME: appdb
+      DATABASE_USERNAME: app
+      DATABASE_PASSWORD: secret
+      NATS_URL: nats://nats:4222
+      # Optionnel: env de dev
+      ENV: development
+    volumes:
+      - ./:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
+    networks:
+      - devnet
+
+  postgres:
+    image: postgres:17.6
+    container_name: postgres
+    environment:
+      POSTGRES_DB: appdb
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: pwd
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U app -d appdb" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    # [TRQ] J'ai liberé les ports pour accéder Postgres avec
+    # outils externes pour créer / verifier tables.
+    ports:
+        - "5432:5432"
+    networks:
+      - devnet
+
+  nats:
+    image: nats:2.10-alpine
+    container_name: nats
+    # Ports non nécessaires si l'app tourne dans le même réseau.
+    # Décommentez si vous voulez y accéder depuis l'hôte:
+    ports:
+      - "4222:4222"  # client
+    #   - "8222:8222"  # monitoring
+    command: [ "-js" ] # active JetStream pour les tests si besoin
+    networks:
+      - devnet
