@@ -13,14 +13,16 @@ services:
     # [TRQ] Test Vapor App
     image: vapor-app:latest
     build:
-        context: ./Vapor_App
+        context: .
 
     container_name: vapor-app
+
+    ports:
+      - '8080:8080'
+    command: ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080"]
     # [TRQ] These became redundant
     # working_dir: /app
     # command: "sleep infinity"
-    # ports:
-    #   - "8080:8080"
     environment:
       # Adaptez ces variables à votre configuration Vapor
       DATABASE_URL: postgres://app:secret@postgres:5432/appdb
@@ -31,8 +33,10 @@ services:
       NATS_URL: nats://nats:4222
       # Optionnel: env de dev
       ENV: development
-    volumes:
-      - ./:/app
+      
+    # [TRQ] volumes declaration breaks execution with "exec /.Vapor_App: is a directory" error
+    # volumes:
+    #  - ./:/app
     depends_on:
       postgres:
         condition: service_healthy
