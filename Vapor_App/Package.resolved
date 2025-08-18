@@ -1,5 +1,5 @@
 {
-  "originHash" : "ad8bc9012d6938fc07cac70bc09f1d70e8c4bbe18980539b6add13ec4c54f1f6",
+  "originHash" : "b6068e684bed1664a89f0d55a80b19ec169fe5f7cf1ce2ba32bec8e322673405",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -233,6 +233,15 @@
       "state" : {
         "revision" : "890830fff1a577dc83134890c7984020c5f6b43b",
         "version" : "1.6.2"
+      }
+    },
+    {
+      "identity" : "swiftynats",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/aus-der-technik/SwiftyNats.git",
+      "state" : {
+        "revision" : "85d0bf40dbb4a0408b7a4e7cefcc67010b0478bd",
+        "version" : "2.2.0"
       }
     },
     {

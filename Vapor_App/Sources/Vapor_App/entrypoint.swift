@@ -2,6 +2,7 @@ import Vapor
 import Logging
 import NIOCore
 import NIOPosix
+import SwiftyNats
 
 @main
 enum Entrypoint {
@@ -18,6 +19,7 @@ enum Entrypoint {
         // let executorTakeoverSuccess = NIOSingletons.unsafeTryInstallSingletonPosixEventLoopGroupAsConcurrencyGlobalExecutor()
         // app.logger.debug("Tried to install SwiftNIO's EventLoopGroup as Swift's global concurrency executor", metadata: ["success": .stringConvertible(executorTakeoverSuccess)])
         
+        testNATS()
         do {
             try await configure(app)
             try await app.execute()
@@ -28,4 +30,30 @@ enum Entrypoint {
         }
         try await app.asyncShutdown()
     }
+}
+
+private func testNATS() {
+    // register a new client
+//    let natsURL = URL(string: "nats://localhost:4222")!
+    let client = NatsClient("nats://localhost:4222")
+    
+    // listen to an event
+    client.on(.connected) { _ in
+        print("Client connected")
+    }
+    
+    // try to connect to the server
+    try? client.connect()
+    
+    // subscribe to a channel with a inline message handler.
+    client.subscribe(to: "foo.bar") { message in
+        print("payload: \(message.payload ?? "failed!")")
+        print("size: \(message.byteCount ?? 0)")
+        print("subject: \(message.subject.subject)")
+        print("reply subject: \(message.replySubject?.subject ?? "none")")
+    }
+    
+    // publish an event onto the message strem into a subject
+    client.publish("this event happened", to: "foo.bar")
+
 }
