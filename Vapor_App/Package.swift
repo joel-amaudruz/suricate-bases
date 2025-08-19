@@ -22,8 +22,12 @@ let package = Package(
             from: "2.2.0"
         ),
         .package(
-            url: "https://github.com/vapor/postgres-nio",
-            from: "1.19.1"
+            url: "https://github.com/vapor/fluent.git",
+            from: "4.11.0"
+        ),
+        .package(
+            url: "https://github.com/vapor/fluent-postgres-driver.git",
+            from: "2.9.0"
         ),
     ],
     targets: [
@@ -47,8 +51,12 @@ let package = Package(
                     package: "SwiftyNats"
                 ),
                 .product(
-                    name: "PostgresNIO",
-                    package: "postgres-nio"
+                    name: "Fluent",
+                    package: "fluent"
+                ),
+                .product(
+                    name: "FluentPostgresDriver",
+                    package: "fluent-postgres-driver"
                 ),
             ],
             swiftSettings: swiftSettings
