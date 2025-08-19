@@ -18,5 +18,15 @@ CMakeUserPresets.json
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #cmake-build-*
 
-#Swift
-*.xcuserstate
+# Swift / Vapor / Xcode / macOS
+Packages
+.build
+xcuserdata
+*.xcodeproj
+DerivedData/
+.DS_Store
+db.sqlite
+.swiftpm
+.env
+.env.*
+!.env.example
