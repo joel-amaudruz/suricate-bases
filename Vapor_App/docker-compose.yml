@@ -13,7 +13,7 @@ services:
     # [TRQ] Test Vapor App
     image: vapor-app:latest
     build:
-        context: ./Vapor_App
+        context: .
 
     container_name: vapor-app
     # [TRQ] These became redundant
