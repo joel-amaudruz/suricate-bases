@@ -21,7 +21,7 @@ struct Entrypoint {
         
         let messenger = try NatsMessagingService()
         let mock = MockEventGenerator(messenger: messenger)
-        mock.start()
+        await mock.start()
         
         do {
             try await configure(app)

@@ -7,7 +7,7 @@
 
 import SwiftyNats
 
-struct NatsMessagingService {
+actor NatsMessagingService {
     private let myClient: NatsClient
     
     init() throws {

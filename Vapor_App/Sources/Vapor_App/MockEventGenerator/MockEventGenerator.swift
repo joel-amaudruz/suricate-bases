@@ -5,11 +5,31 @@
 //  Created by Tarquinio Teles on 19/08/25.
 //
 
-struct MockEventGenerator {
+import Foundation
+
+actor MockEventGenerator {
     let messenger: NatsMessagingService
+    var timer: Timer?
+    
+    init(messenger: NatsMessagingService) {
+        self.messenger = messenger
+        Task {
+            await messenger.subscribe(to: "foo.bar")
+        }
+    }
     
     func start() {
-        messenger.subscribe(to: "foo.bar")
-        messenger.publish("this event happened", to: "foo.bar")
+        timer = Timer(timeInterval: 1.0, repeats: true) { [weak self] timer in
+            Task { [weak self] in
+                print("inside timer")
+                guard let self else { return }
+                let randomNumber = Int.random(in: 1...1000)
+                
+                await self.messenger.publish("\(randomNumber)", to: "foo.bar")
+            }
+        }
+        if let newTimer = timer {
+            RunLoop.main.add(newTimer, forMode: .common)
+        }
     }
 }
