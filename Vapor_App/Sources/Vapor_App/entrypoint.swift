@@ -3,6 +3,7 @@ import Logging
 import NIOCore
 import NIOPosix
 import SwiftyNats
+import PostgresNIO
 
 @main
 enum Entrypoint {
@@ -11,6 +12,17 @@ enum Entrypoint {
         try LoggingSystem.bootstrap(from: &env)
         
         let app = try await Application.make(env)
+        
+        let postgresClient = PostgresClient(
+            configuration: .init(
+                host: "localhost",
+                username: "app",
+                password: "pwd",
+                database: "appdb",
+                tls: .prefer(.clientDefault)
+            )
+        )
+        print("Postgres client created: \(postgresClient)")
 
         // This attempts to install NIO as the Swift Concurrency global executor.
         // You can enable it if you'd like to reduce the amount of context switching between NIO and Swift Concurrency.
@@ -22,7 +34,16 @@ enum Entrypoint {
         testNATS()
         do {
             try await configure(app)
-            try await app.execute()
+            
+            try await withThrowingDiscardingTaskGroup { group in
+                group.addTask {
+                    await postgresClient.run()
+                }
+                
+                group.addTask {
+                    try await app.execute()
+                }
+            }
         } catch {
             app.logger.report(error: error)
             try? await app.asyncShutdown()

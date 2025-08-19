@@ -4,31 +4,65 @@ import PackageDescription
 let package = Package(
     name: "Vapor_App",
     platforms: [
-       .macOS(.v13)
+        .macOS(.v14)
     ],
     dependencies: [
         // 💧 A server-side Swift web framework.
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.115.0"),
+        .package(
+            url: "https://github.com/vapor/vapor.git",
+            from: "4.115.0"
+        ),
         // 🔵 Non-blocking, event-driven networking for Swift. Used for custom executors
-        .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
-        .package(url: "https://github.com/aus-der-technik/SwiftyNats.git", from: "2.2.0"),
+        .package(
+            url: "https://github.com/apple/swift-nio.git",
+            from: "2.65.0"
+        ),
+        .package(
+            url: "https://github.com/aus-der-technik/SwiftyNats.git",
+            from: "2.2.0"
+        ),
+        .package(
+            url: "https://github.com/vapor/postgres-nio",
+            from: "1.19.1"
+        ),
     ],
     targets: [
         .executableTarget(
             name: "Vapor_App",
             dependencies: [
-                .product(name: "Vapor", package: "vapor"),
-                .product(name: "NIOCore", package: "swift-nio"),
-                .product(name: "NIOPosix", package: "swift-nio"),
-                .product(name: "SwiftyNats", package: "SwiftyNats"),
+                .product(
+                    name: "Vapor",
+                    package: "vapor"
+                ),
+                .product(
+                    name: "NIOCore",
+                    package: "swift-nio"
+                ),
+                .product(
+                    name: "NIOPosix",
+                    package: "swift-nio"
+                ),
+                .product(
+                    name: "SwiftyNats",
+                    package: "SwiftyNats"
+                ),
+                .product(
+                    name: "PostgresNIO",
+                    package: "postgres-nio"
+                ),
             ],
             swiftSettings: swiftSettings
         ),
         .testTarget(
             name: "Vapor_AppTests",
             dependencies: [
-                .target(name: "Vapor_App"),
-                .product(name: "VaporTesting", package: "vapor"),
+                .target(
+                    name: "Vapor_App"
+                ),
+                .product(
+                    name: "VaporTesting",
+                    package: "vapor"
+                ),
             ],
             swiftSettings: swiftSettings
         )
