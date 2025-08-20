@@ -22,6 +22,10 @@ let package = Package(
             from: "2.2.0"
         ),
         .package(
+            url: "https://github.com/vapor/postgres-nio",
+            from: "1.19.1"
+        ),
+        .package(
             url: "https://github.com/vapor/fluent.git",
             from: "4.11.0"
         ),
@@ -49,6 +53,10 @@ let package = Package(
                 .product(
                     name: "SwiftyNats",
                     package: "SwiftyNats"
+                ),
+                .product(
+                    name: "PostgresNIO",
+                    package: "postgres-nio"
                 ),
                 .product(
                     name: "Fluent",
