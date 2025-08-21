@@ -31,8 +31,10 @@ struct IntegerSentry {
     internal func extractIntegerFrom(_ msg: NatsMessage) -> Int? {
         let data = msg.payload.data(using: .utf8)!
         do {
-            let json = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
-            return json["value"] as? Int
+            let integerMsg = try IntegerEvent.decoder
+                .decode(IntegerEvent.self, from: data)
+            print("received: \(integerMsg.value)")
+            return Int(integerMsg.value)
         } catch {
             return nil
         }
