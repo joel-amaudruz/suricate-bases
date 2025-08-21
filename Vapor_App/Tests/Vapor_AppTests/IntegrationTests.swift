@@ -24,7 +24,7 @@ struct IntegrationTests {
         let messenger = try! NatsMessagingService()
         let dispose = DisposeBag()
         
-        let pub = messenger.subscribe(to: "test")
+        let pub = messenger.observable(for: "test")
         
         pub
             .subscribe(onNext: { msg in

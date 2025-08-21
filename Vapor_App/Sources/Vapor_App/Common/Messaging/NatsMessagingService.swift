@@ -5,17 +5,23 @@
 //  Created by Tarquinio Teles on 19/08/25.
 //
 
-import SwiftyNats
+@preconcurrency import SwiftyNats
 import RxSwift
 
 struct NatsMessage {
     let payload: String
     let subject: String
     let replySubject: String?
+    
+    init(payload: String, subject: String, replySubject: String?) {
+        self.payload = payload
+        self.subject = subject
+        self.replySubject = replySubject
+    }
 }
 
 struct NatsMessagingService {
-    private let myClient: NatsClient
+    private nonisolated let myClient: NatsClient
     
     init() throws {
         // register a new client
@@ -30,7 +36,7 @@ struct NatsMessagingService {
         try myClient.connect()
     }
     
-    func subscribe(to subject: String, debug: Bool = false) -> Observable<NatsMessage> {
+    func observable(for subject: String, debug: Bool = false) -> Observable<NatsMessage> {
         let pub = PublishSubject<NatsMessage>()
         
         // subscribe to a channel with a inline message handler.

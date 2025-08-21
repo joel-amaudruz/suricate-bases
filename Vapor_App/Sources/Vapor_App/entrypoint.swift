@@ -23,6 +23,9 @@ struct Entrypoint {
         let mock = MockEventGenerator(messenger: messenger)
         await mock.start()
         
+        let sentry = IntegerSentry(modulus: 4)
+        sentry.start(with: messenger)
+        
         do {
             try await configure(app)
             try await app.execute()
