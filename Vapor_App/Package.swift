@@ -33,6 +33,10 @@ let package = Package(
             url: "https://github.com/vapor/fluent-postgres-driver.git",
             from: "2.9.0"
         ),
+        .package(
+            url: "https://github.com/ReactiveX/RxSwift.git",
+            from: "6.0.0"
+        ),
     ],
     targets: [
         .executableTarget(
@@ -65,6 +69,10 @@ let package = Package(
                 .product(
                     name: "FluentPostgresDriver",
                     package: "fluent-postgres-driver"
+                ),
+                .product(
+                    name: "RxSwift",
+                    package: "RxSwift"
                 ),
             ],
             swiftSettings: swiftSettings
