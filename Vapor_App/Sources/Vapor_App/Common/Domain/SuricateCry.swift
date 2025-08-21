@@ -8,10 +8,14 @@
 import Foundation
 
 enum SuricateCryActions: String, Codable {
-    case email
-    case sms
-    case push
+    case emailNotification
+    case smsNotification
+    case urlNotification
+    case httpRequest
+    case externalScript
+    case natsPushback
     case none
+    case unknown
 }
 
 struct SuricateCry: Codable {
@@ -19,6 +23,7 @@ struct SuricateCry: Codable {
     let timestamp: Date
     let action: SuricateCryActions
     let message: String?
+    let destination: String?
     
     private var encoder: JSONEncoder {
         let encoder = JSONEncoder()
@@ -32,11 +37,17 @@ struct SuricateCry: Codable {
         return decoder
     }
     
-    init(id: UUID = UUID(), timestamp: Date = .now, action: SuricateCryActions, message: String?) {
+    init(id: UUID = UUID(),
+         timestamp: Date = .now,
+         action: SuricateCryActions,
+         message: String?,
+         destination: String?
+    ) {
         self.id = id
         self.timestamp = timestamp
         self.action = action
         self.message = message
+        self.destination = destination
     }
     
     func jsonData() throws -> Data {
