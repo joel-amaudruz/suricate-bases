@@ -23,8 +23,11 @@ struct Entrypoint {
         let mock = MockEventGenerator(messenger: messenger)
         await mock.start()
         
-        let sentry = IntegerSentry(modulus: 4)
+        var sentry = IntegerSentry(modulus: 4)
         sentry.start(with: messenger)
+        
+        let worker = EmailWorker()
+        worker.start(with: messenger)
         
         do {
             try await configure(app)

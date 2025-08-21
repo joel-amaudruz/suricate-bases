@@ -25,13 +25,15 @@ struct SuricateCry: Codable {
     let message: String?
     let destination: String?
     
-    private var encoder: JSONEncoder {
+    static let CryChannel = "suricate.cry"
+    
+    static var encoder: JSONEncoder {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         return encoder
     }
     
-    private var decoder: JSONDecoder {
+    static var decoder: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return decoder
@@ -50,8 +52,13 @@ struct SuricateCry: Codable {
         self.destination = destination
     }
     
+    init(with str: String) throws {
+        let data = str.data(using: .utf8)!
+        self = try Self.decoder.decode(SuricateCry.self, from: data)
+    }
+    
     func jsonData() throws -> Data {
-        return try encoder.encode(self)
+        return try Self.encoder.encode(self)
     }
     
     func jsonString() throws -> String {
