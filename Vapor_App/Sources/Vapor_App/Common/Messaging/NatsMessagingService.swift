@@ -6,8 +6,15 @@
 //
 
 import SwiftyNats
+import RxSwift
 
-actor NatsMessagingService {
+struct NatsMessage {
+    let payload: String
+    let subject: String
+    let replySubject: String?
+}
+
+struct NatsMessagingService {
     private let myClient: NatsClient
     
     init() throws {
@@ -23,14 +30,22 @@ actor NatsMessagingService {
         try myClient.connect()
     }
     
-    func subscribe(to subject: String) {
+    func subscribe(to subject: String, debug: Bool = false) -> Observable<NatsMessage> {
+        let pub = PublishSubject<NatsMessage>()
+        
         // subscribe to a channel with a inline message handler.
         myClient.subscribe(to: subject) { message in
-            print("payload: \(message.payload ?? "failed!")")
-            print("size: \(message.byteCount ?? 0)")
-            print("subject: \(message.subject.subject)")
-            print("reply subject: \(message.replySubject?.subject ?? "none")")
+            if debug {
+                print("payload: \(message.payload ?? "failed!")")
+                print("size: \(message.byteCount ?? 0)")
+                print("subject: \(message.subject.subject)")
+                print("reply subject: \(message.replySubject?.subject ?? "none")")
+            }
+            
+            let msg = NatsMessage(payload: message.payload ?? "Failed!", subject: message.subject.subject, replySubject: message.replySubject?.subject)
+            pub.onNext(msg)
         }
+        return pub.asObservable()
     }
     
     func publish(_ msg: String, to subject: String) {

@@ -71,7 +71,7 @@ let package = Package(
                     package: "fluent-postgres-driver"
                 ),
                 .product(
-                    name: "RxSwift",
+                    name: "RxCocoa",
                     package: "RxSwift"
                 ),
             ],

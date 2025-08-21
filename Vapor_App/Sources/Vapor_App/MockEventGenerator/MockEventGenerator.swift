@@ -14,9 +14,6 @@ actor MockEventGenerator {
     
     init(messenger: NatsMessagingService) {
         self.messenger = messenger
-        Task {
-            await messenger.subscribe(to: "foo.bar")
-        }
     }
     
     private func createAndSendMockEvent() async {
@@ -25,7 +22,7 @@ actor MockEventGenerator {
         
         do {
             let message = try event.jsonString()
-            await messenger.publish(message, to: subject)
+            messenger.publish(message, to: subject)
         } catch {
             print("Error in creating mock event message: \(error)")
         }
